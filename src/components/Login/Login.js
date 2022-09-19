@@ -13,15 +13,13 @@ const Login = (props) => {
 
   useEffect(() => {
     const interval = setTimeout(()=>{
-      console.log('checking validity');
       setFormIsValid(
         enteredEmail.includes('@') && enteredPassword.trim().length > 6
       );
     },500);
-    return () => {
-      console.log('cleanup');
-      clearTimeout(interval); //clear the last timer before setting a new one
-    };
+    return () => {              // clear the last timer before setting a new one
+      clearTimeout(interval);   // this way I can check for form validity only
+    };                          // after the input is idle for 0,5 seconds
   },[enteredEmail,enteredPassword]);
 
   const emailChangeHandler = (event) => {
