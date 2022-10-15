@@ -34,7 +34,6 @@ const passwordReducer = (state, action) => {
 };
 
 const Login = () => {
-  const [formIsValid, setFormIsValid] = useState(false);
   const [emailTouched, setEmailTouched] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
 
@@ -54,16 +53,6 @@ const Login = () => {
 
   const { isValid: emailIsValid } = emailState; // array destructuring
   const { isValid: passwordIsValid } = passwordState;
-
-  //useEffect(() => {
-  //  const interval = setTimeout(() => {
-  //    setFormIsValid(emailIsValid && passwordIsValid);
-  //  }, 500);
-  //  return () => {
-  //    //CLEANUP               // clear the last timer before setting a new one
-  //    clearTimeout(interval); // this way I can check for form validity only
-  //  }; // after the input is idle for 0,5 seconds
-  //}, [emailIsValid, passwordIsValid]);
 
   const emailChangeHandler = (event) => {
     setEmailTouched(true);
