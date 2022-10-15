@@ -31,7 +31,7 @@ const passwordReducer = (state, action) => {
   return { value: "", isValid: false };
 };
 
-const Login = (props) => {
+const Login = () => {
   const [formIsValid, setFormIsValid] = useState(false);
   const [emailTouched, setEmailTouched] = useState(false);
   const [passwordTouched, setPasswordTouched] = useState(false);
@@ -89,6 +89,8 @@ const Login = (props) => {
     setPasswordTouched(true);
     if (formIsValid) {
       authContext.onLogin(emailState.value, passwordState.value);
+      setEmailTouched(false);
+      setPasswordTouched(false);
     } else if (!emailIsValid) {
       emailInputRef.current.focus();
     } else {
