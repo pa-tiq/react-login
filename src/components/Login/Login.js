@@ -11,12 +11,14 @@ import Button from "../UI/Button/Button";
 import Input from "../UI/Input/Input";
 import AuthContext from "../../store/auth-context";
 
+const re = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+
 const emailReducer = (state, action) => {
   if (action.type === "USER_INPUT") {
-    return { value: action.val, isValid: action.val.includes("@") };
+    return { value: action.val, isValid: re.test(action.val)};
   }
   if (action.type === "INPUT_BLUR") {
-    return { value: state.value, isValid: state.value.includes("@") };
+    return { value: state.value, isValid: re.test(state.value)};
   }
   return { value: "", isValid: false };
 };
@@ -53,15 +55,15 @@ const Login = () => {
   const { isValid: emailIsValid } = emailState; // array destructuring
   const { isValid: passwordIsValid } = passwordState;
 
-  useEffect(() => {
-    const interval = setTimeout(() => {
-      setFormIsValid(emailIsValid && passwordIsValid);
-    }, 500);
-    return () => {
-      //CLEANUP               // clear the last timer before setting a new one
-      clearTimeout(interval); // this way I can check for form validity only
-    }; // after the input is idle for 0,5 seconds
-  }, [emailIsValid, passwordIsValid]);
+  //useEffect(() => {
+  //  const interval = setTimeout(() => {
+  //    setFormIsValid(emailIsValid && passwordIsValid);
+  //  }, 500);
+  //  return () => {
+  //    //CLEANUP               // clear the last timer before setting a new one
+  //    clearTimeout(interval); // this way I can check for form validity only
+  //  }; // after the input is idle for 0,5 seconds
+  //}, [emailIsValid, passwordIsValid]);
 
   const emailChangeHandler = (event) => {
     setEmailTouched(true);
@@ -87,7 +89,7 @@ const Login = () => {
     event.preventDefault();
     setEmailTouched(true);
     setPasswordTouched(true);
-    if (formIsValid) {
+    if (emailIsValid && passwordIsValid) {
       authContext.onLogin(emailState.value, passwordState.value);
       setEmailTouched(false);
       setPasswordTouched(false);
