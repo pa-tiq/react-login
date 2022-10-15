@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useReducer, useContext, useRef } from "react";
+import React, {
+  useEffect,
+  useState,
+  useReducer,
+  useContext,
+  useRef,
+} from "react";
 import Card from "../UI/Card/Card";
 import classes from "./Login.module.css";
 import Button from "../UI/Button/Button";
@@ -27,6 +33,8 @@ const passwordReducer = (state, action) => {
 
 const Login = (props) => {
   const [formIsValid, setFormIsValid] = useState(false);
+  const [emailTouched, setEmailTouched] = useState(false);
+  const [passwordTouched, setPasswordTouched] = useState(false);
 
   const [emailState, dispatchEmail] = useReducer(emailReducer, {
     value: "",
@@ -48,7 +56,6 @@ const Login = (props) => {
   useEffect(() => {
     const interval = setTimeout(() => {
       setFormIsValid(emailIsValid && passwordIsValid);
-      setFormIsValid(emailIsValid && passwordIsValid);
     }, 500);
     return () => {
       //CLEANUP               // clear the last timer before setting a new one
@@ -57,28 +64,34 @@ const Login = (props) => {
   }, [emailIsValid, passwordIsValid]);
 
   const emailChangeHandler = (event) => {
+    setEmailTouched(true);
     dispatchEmail({ type: "USER_INPUT", val: event.target.value });
   };
 
   const passwordChangeHandler = (event) => {
+    setPasswordTouched(true);
     dispatchPassword({ type: "USER_INPUT", val: event.target.value });
   };
 
   const validateEmailOnBlurHandler = () => {
+    setEmailTouched(true);
     dispatchEmail({ type: "INPUT_BLUR" });
   };
 
   const validatePasswordOnBlurHandler = () => {
+    setPasswordTouched(true);
     dispatchPassword({ type: "INPUT_BLUR" });
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
-    if(formIsValid){
+    setEmailTouched(true);
+    setPasswordTouched(true);
+    if (formIsValid) {
       authContext.onLogin(emailState.value, passwordState.value);
-    }else if(!emailIsValid){
+    } else if (!emailIsValid) {
       emailInputRef.current.focus();
-    }else{
+    } else {
       passwordInputRef.current.focus();
     }
   };
@@ -89,6 +102,7 @@ const Login = (props) => {
         <Input
           ref={emailInputRef}
           isValid={emailIsValid}
+          wasTouched={emailTouched}
           label="E-Mail"
           type="email"
           id="email"
@@ -96,9 +110,11 @@ const Login = (props) => {
           onChange={emailChangeHandler}
           onBlur={validateEmailOnBlurHandler}
         />
+        {!emailIsValid && emailTouched && <p>Invalid e-mail.</p>}
         <Input
           ref={passwordInputRef}
           isValid={passwordIsValid}
+          wasTouched={passwordTouched}
           label="Password"
           type="password"
           id="password"
@@ -106,6 +122,7 @@ const Login = (props) => {
           onChange={passwordChangeHandler}
           onBlur={validatePasswordOnBlurHandler}
         />
+        {!passwordIsValid && passwordTouched && <p>Invalid password.</p>}
         <div className={classes.actions}>
           <Button type="submit" className={classes.btn}>
             Login
